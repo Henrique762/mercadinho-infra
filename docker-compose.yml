@@ -1,0 +1,13 @@
+services:
+  db:
+    container_name: postgresql-db
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: admin
+    volumes:
+          - data_db:/var/lib/postgresql/data
+
+volumes:
+  data_db:
