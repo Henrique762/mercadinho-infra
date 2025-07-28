@@ -12,8 +12,7 @@ metadata:
     kubernetes.io/ingress.class: alb
 spec:
   rules:
-    - host: flask-api.seudominio.com
-      http:
+    - http:
         paths:
           - path: /
             pathType: Prefix
