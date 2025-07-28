@@ -22,4 +22,4 @@ spec:
             - containerPort: 5000
           env:
             - name: DATABASE_URL
-              value: "sua-url-do-banco-aqui"
+              value: "postgresql://postgres:aVeVYknHyitc71NdkSFe@database-h.caisrwnnknl6.us-east-1.rds.amazonaws.com:5432/postgres"
