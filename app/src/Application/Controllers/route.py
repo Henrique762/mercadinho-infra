@@ -7,6 +7,7 @@ from src.Application.Validators.vendas import create_venda
 from src.Application.Validators.wpp import ativacao_cod
 from src.Application.Validators.login import login_user
 from src.Application.Validators.produto import edit_produto, listar_produto, mostrar_produto_por_id, inat_produto
+from src.Application.Validators.health import health_test
 from src.Infrastructure.Model.produtos import Produtos
 from werkzeug.utils import secure_filename
 import os
@@ -17,6 +18,7 @@ ativacao_blueprint = Blueprint('ativacao', __name__, url_prefix='/api')
 venda_blueprint = Blueprint('venda', __name__, url_prefix='/api')
 login_blueprint = Blueprint('login', __name__, url_prefix='/api')
 produtos_bp = Blueprint('produtos', __name__, url_prefix='/api')
+health_bp = Blueprint('health', __name__, url_prefix='/api')
 
 
 
@@ -173,3 +175,14 @@ def inativar_produto(id_produto):
 def get_imagem(filename):
     caminho = os.path.join(os.getcwd(), 'uploads', 'produtos')
     return send_from_directory(caminho, filename)
+
+
+
+
+####### Health Check ######
+@health_bp.route('/health', methods=['GET'])
+def health_check():
+    valid = health_test()
+    return valid
+
+

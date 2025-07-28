@@ -1,0 +1,28 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: h-cluster
+  region: us-east-1
+  version: "1.33"
+  tags:
+    Project: SimpleEKS
+    Environment: Development
+
+vpc:
+  id: vpc-0fccf0ca6cb0cf783
+  subnets:
+    public:
+      us-east-1a: {id: subnet-02136b919f6770815}
+      us-east-1b: {id: subnet-0339eb657783e26c2}
+
+iam:
+  withOIDC: true
+
+managedNodeGroups:
+  - name: worker-nodes-h
+    instanceType: t3.medium
+    minSize: 1
+    maxSize: 2
+    desiredCapacity: 1
+    volumeSize: 20
