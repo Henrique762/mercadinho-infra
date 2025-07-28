@@ -8,7 +8,6 @@ metadata:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/backend-protocol: HTTP
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
-    alb.ingress.kubernetes.io/group.name: flask-api
     alb.ingress.kubernetes.io/subnets: subnet-0339eb657783e26c2,subnet-02136b919f6770815
     kubernetes.io/ingress.class: alb
 spec:
