@@ -1,0 +1,13 @@
+project: flask-api
+source:
+  repoURL: https://github.com/Henrique762/mercadinho.git
+  path: manifests
+  targetRevision: HEAD
+destination:
+  server: https://kubernetes.default.svc
+  namespace: flask-api
+syncPolicy:
+  automated:
+    selfHeal: true
+  syncOptions:
+    - CreateNamespace=true
