@@ -22,4 +22,4 @@ spec:
             - containerPort: 5000
           env:
             - name: DATABASE_URL
-              value: "postgresql://postgres:admin@postgres.default.svc.cluster.local:5432/postgres"
+              value: "postgresql://postgres:admin@postgres.flask-api.svc.cluster.local:5432/postgres"
