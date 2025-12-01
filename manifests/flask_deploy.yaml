@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: flask-api
-          image: 725510651649.dkr.ecr.us-east-1.amazonaws.com/flask-api:latest
+          image: 725510651649.dkr.ecr.us-east-1.amazonaws.com/mercadinho-flask-api:latest
           ports:
             - containerPort: 5000
           env:
