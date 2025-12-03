@@ -25,7 +25,7 @@ managedNodeGroups:
     instanceType: t3.medium
     minSize: 1
     maxSize: 2
-    desiredCapacity: 1
+    desiredCapacity: 2
     volumeSize: 20
     subnets: 
     iam:
