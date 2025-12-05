@@ -11,7 +11,7 @@ metadata:
   name: rollout-api-flask
   namespace: flask-api
 spec:
-  replicas: 2
+  replicas: 10
   selector:
     matchLabels:
       app: flask-api
@@ -33,5 +33,7 @@ spec:
     canary:
       steps:
         - setWeight: 50
+        - pause: {}
+        - setWeight: 75
         - pause: {}
         - setWeight: 100
