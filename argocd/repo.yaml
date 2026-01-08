@@ -8,7 +8,7 @@ metadata:
   name: repo-mercadinho
   namespace: argocd
 data:
-  password: Z2hwX2JaYnhQejJXeTEzM2xnRFNBaWFsQUpGQVlrMWI5SjNLT25WYg==
+  password: Z2hwX2xIUENNY2FhdmQ2SDI5WkVGQjhHelF3OXBqVnNyMDQyOTJXbA==
   project: ZGVmYXVsdA==
   type: Z2l0
   url: aHR0cHM6Ly9naXRodWIuY29tL0hlbnJpcXVlNzYyL21lcmNhZGluaG8uZ2l0

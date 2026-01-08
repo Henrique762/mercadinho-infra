@@ -22,22 +22,34 @@ helm upgrade --install argocd argo/argo-cd \
 
 echo "✅ Argo CD instalado com sucesso!"
 
-echo "🚀 Aplicando Storage Class"
+# echo "🚀 Aplicando Storage Class"
 
-kubectl apply -f resources-k8s/storageclass.yaml
+# kubectl apply -f resources-k8s/storageclass.yaml
 
 echo "✅ Storage Class instalado com sucesso!"
 
 echo "🚀 Aplicando Repo do ArgoCD"
 
-kubectl apply -f ../argocd/repo.yaml
+kubectl apply -f /mercadinho//argocd/repo.yaml
 
 echo "✅ Repo instalado com sucesso!"
 
 echo "🚀 Aplicando Application do ArgoCD"
 
-kubectl apply -f ../argocd/app.yaml
+kubectl apply -f /mercadinho/argocd/app.yaml
 
-echo "✅ Storage Class instalado com sucesso!"
+echo "✅ Application do ArgoCD instalado com sucesso!"
+
+
+kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+
+
+### PROMETHEUS INSTALLATION ###
+helm install prometheus prometheus-community/prometheus \
+  --namespace monitoring \
+  --create-namespace
+
+
 
 
