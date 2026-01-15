@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: flask-api
-          image: mercadinho-flask-api:2.0
+          image: mercadinho-flask-api:3.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000
