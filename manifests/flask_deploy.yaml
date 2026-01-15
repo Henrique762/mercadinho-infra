@@ -28,7 +28,7 @@ spec:
             - containerPort: 5000
           env:
             - name: DATABASE_URL
-              value: "mysql+pymysql://admin:admintesteh@aurora-aurora-mysql-h-instance-1.caisrwnnknl6.us-east-1.rds.amazonaws.com:3306/api"
+              value: "mysql+pymysql://admin:admintesteh@aurora-mysql-h.cluster-caisrwnnknl6.us-east-1.rds.amazonaws.com:3306/api"
   strategy:
     canary:
       steps:
