@@ -5,12 +5,12 @@ metadata:
   labels:
     app: postgres
 spec:
-  storageClassName: gp3
+  storageClassName: standard
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 3Gi
 ---
 apiVersion: v1
 kind: ConfigMap

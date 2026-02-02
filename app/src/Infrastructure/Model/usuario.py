@@ -8,4 +8,4 @@ class Vendedores(db.Model):
     cnpj = db.Column(db.String(14), nullable=False, unique=True)
     senha = db.Column(db.String(255), nullable=False)
     numero_cel = db.Column(db.String(255), nullable=False)
-    status = db.Column(db.String, nullable=False, default='Inativo')
+    status = db.Column(db.String(50), nullable=False, default='Ativo')
