@@ -22,17 +22,21 @@ helm upgrade --install argocd argo/argo-cd \
 
 echo "✅ Argo CD instalado com sucesso!"
 
+### ARGO Rollout ###
+
+echo "Instalando Argo CD Rollouts..."
+kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+
+
+echo "✅ Argo Rollout instalado com sucesso!"
+
+
 echo "🚀 Aplicando Storage Class"
 
 kubectl apply -f resources-k8s/storageclass.yaml
 
 echo "✅ Storage Class instalado com sucesso!"
-
-echo "🚀 Aplicando Repo do ArgoCD"
-
-kubectl apply -f ../argocd/repo.yaml
-
-echo "✅ Repo instalado com sucesso!"
 
 echo "🚀 Aplicando Application do ArgoCD"
 
