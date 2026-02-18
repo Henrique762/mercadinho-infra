@@ -2,6 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgres-volume-claim
+  namespace: flask-api
   labels:
     app: postgres
 spec:
@@ -16,6 +17,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-secret
+  namespace: flask-api
   labels:
     app: postgres
 data:
@@ -27,6 +29,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
+  namespace: flask-api
 spec:
   replicas: 1
   selector:
@@ -59,6 +62,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres
+  namespace: flask-api
   labels:
     app: postgres
 spec:
