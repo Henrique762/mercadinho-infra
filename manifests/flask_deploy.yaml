@@ -28,7 +28,7 @@ spec:
             - containerPort: 5000
           env:
             - name: DATABASE_URL
-              value: "mysql+pymysql://admin:admintesteh@aurora-mysql-h.cluster-caisrwnnknl6.us-east-1.rds.amazonaws.com:3306/api"
+              value: "postgresql://postgres:admin@postgresql-db-mercadinho:5432/postgres"
   strategy:
     canary:
       steps:
