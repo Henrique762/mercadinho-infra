@@ -28,7 +28,7 @@ spec:
             - containerPort: 5000
           env:
             - name: DATABASE_URL
-              value: "postgresql://postgres:admin@postgresql-db-mercadinho:5432/postgres"
+              value: "postgresql://postgres:admin@postgres:5432/postgres"
   strategy:
     canary:
       steps:
