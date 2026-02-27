@@ -18,17 +18,17 @@ type: Opaque
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: mercado-app
+  name: argocd
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/Henrique762/mercadinho.git
-    path: manifests
+    path: manifests/argo-cd
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
-    namespace: flask-api
+    namespace: argocd
   syncPolicy:
     automated:
       selfHeal: true
