@@ -1,0 +1,9 @@
+USER-SUPPLIED VALUES:
+controller:
+  metrics:
+    enabled: true
+server:
+  metrics:
+    enabled: true
+  extraArgs:
+    - --insecure

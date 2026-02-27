@@ -18,9 +18,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: mercadinho-flask-api:1.0
+    image: mercadinho-flask-api:3.0
     environment:
-      DATABASE_URL: postgresql://postgres:admin@postgresql-db-mercadinho:5432/postgres
+      DATABASE_URL: postgresql://postgres:admintesteh@postgresql-db-mercadinho:5432/postgres
+      # "postgresql://postgres:admintesteh@postgres-h.caisrwnnknl6.us-east-1.rds.amazonaws.com:5432/postgres"
     ports:
       - 8888:8888
     networks:
