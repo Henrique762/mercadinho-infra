@@ -6,9 +6,13 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: "selfsigned-issuer"
     konghq.com/strip-path: "false"
-    secretName: argocd-server-tls
+    
 spec:
   ingressClassName: kong
+  tls:
+  - hosts:
+    - argocd.henrique.local
+    secretName: argocd-tls
   rules:
   - host: argocd.henrique.local
     http:
