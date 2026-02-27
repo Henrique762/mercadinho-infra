@@ -1,0 +1,16 @@
+deploymentMode: SingleBinary
+mimir:
+  structuredConfig:
+    multitenancy_enabled: false
+    replication_factor: 1
+    common:
+      storage:
+        backend: local
+        local:
+          directory: /data/mimir
+
+# RESOLUÇÃO DO ERRO: Renomeando o ServiceAccount e desativando o Minio interno
+minio:
+  enabled: false # No modo local, você não precisa do Minio rodando como pod
+serviceAccount:
+  name: mimir-sa # Força um nome diferente para não conflitar com o do Loki

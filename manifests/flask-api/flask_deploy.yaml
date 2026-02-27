@@ -29,6 +29,12 @@ spec:
           env:
             - name: DATABASE_URL
               value: "postgresql://postgres:admin@postgres:5432/postgres"
+            - name: OTEL_PYTHON_LOG_CORRELATION
+              value: "true"
+            - name: OTEL_SERVICE_NAME
+              value: "flask-app-homelab"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://alloy.monitoring.svc.cluster.local:4317"
   strategy:
     canary:
       steps:
