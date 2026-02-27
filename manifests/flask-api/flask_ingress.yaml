@@ -3,9 +3,14 @@ kind: Ingress
 metadata:
   name: flask-api-ingress
   annotations:
+    cert-manager.io/cluster-issuer: "selfsigned-issuer"
     konghq.com/strip-path: "false"
 spec:
   ingressClassName: kong
+  tls:
+  - hosts:
+    - api.henrique.local
+    secretName: argocd-tls
   rules:
   - http:
       paths:
