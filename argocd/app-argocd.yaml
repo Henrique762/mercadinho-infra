@@ -24,7 +24,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/Henrique762/mercadinho.git
-    path: manifests/argo-cd
+    path: manifests/argocd
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc

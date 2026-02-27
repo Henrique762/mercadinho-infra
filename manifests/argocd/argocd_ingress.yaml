@@ -4,13 +4,16 @@ metadata:
   name: argocd-ingress
   namespace: argocd
   annotations:
+    cert-manager.io/cluster-issuer: "selfsigned-issuer"
     konghq.com/strip-path: "false"
+    secretName: argocd-server-tls
 spec:
   ingressClassName: kong
   rules:
-  - http:
+  - host: argocd.henrique.local
+    http:
       paths:
-      - path: /argocd
+      - path: /
         pathType: Prefix
         backend:
           service:
