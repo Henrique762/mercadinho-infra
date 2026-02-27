@@ -13,15 +13,13 @@ spec:
     - api.henrique.local
     secretName: flask-api-tls
   rules:
-  - http:
+  - host: api.henrique.local
+    http:
       paths:
-      - host: api.henrique.local
-        http:
-          paths:
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: flask-api-service
-                port:
-                  number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: flask-api-service
+            port:
+              number: 80
