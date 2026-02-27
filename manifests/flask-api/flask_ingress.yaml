@@ -15,10 +15,13 @@ spec:
   rules:
   - http:
       paths:
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: flask-api-service
-            port:
-              number: 80
+      - host: api.henrique.local
+        http:
+          paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: flask-api-service
+                port:
+                  number: 80
