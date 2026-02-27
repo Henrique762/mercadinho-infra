@@ -2,6 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: flask-api-ingress
+  namespace: flask-api
   annotations:
     cert-manager.io/cluster-issuer: "selfsigned-issuer"
     konghq.com/strip-path: "false"
@@ -10,7 +11,7 @@ spec:
   tls:
   - hosts:
     - api.henrique.local
-    secretName: argocd-tls
+    secretName: flask-api-tls
   rules:
   - http:
       paths:
