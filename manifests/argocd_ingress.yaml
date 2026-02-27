@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: flask-api-ingress
+  name: argocd-ingress
   annotations:
     konghq.com/strip-path: "false"
 spec:
@@ -9,10 +9,10 @@ spec:
   rules:
   - http:
       paths:
-      - path: /api
+      - path: /argocd
         pathType: Prefix
         backend:
           service:
-            name: flask-api-service
+            name: argocd-server
             port:
               number: 80
