@@ -16,5 +16,5 @@ COPY app/ .
 # Expõe a porta que a aplicação vai rodar
 EXPOSE 8888
 
-# Comando para iniciar o Gunicorn com instrumentação do OpenTelemetry
-CMD ["opentelemetry-instrument", "gunicorn", "-w", "4", "-b", "0.0.0.0:8888", "app:app"]
+# Comando para iniciar o Gunicorn
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8888", "app:app"]
