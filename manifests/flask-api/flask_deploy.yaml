@@ -45,9 +45,11 @@ spec:
               value: "grpc"
   strategy:
     canary:
-      steps:
-        - setWeight: 50
-        - pause: {}
-        - setWeight: 75
-        - pause: {}
-        - setWeight: 100
+      # steps:
+      #   - setWeight: 50
+      #   - pause: {}
+      #   - setWeight: 75
+      #   - pause: {}
+      #   - setWeight: 100
+      maxSurge: "25%"
+      maxUnavailable: 0
