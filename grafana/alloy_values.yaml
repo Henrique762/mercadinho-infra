@@ -6,11 +6,52 @@ alloy:
     portName: http
   configMap:
     content: |
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
       // --- LOGS (LOKI) ---
+
+      // Componente de Relabeling: Transforma metadados do K8s em Labels do Loki
+      loki.relabel "kubernetes_logs" {
+        forward_to = [loki.write.local_loki.receiver]
+
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          target_label  = "app"
+        }
+        
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_name"]
+          target_label  = "app"
+        }
+
+        // Label estática para identificar o cluster
+        rule {
+          replacement  = "meu-cluster-minikube"
+          target_label = "cluster"
+        }
+      }
+
       // Coleta os logs de todos os pods descobertos no cluster
       loki.source.kubernetes "all_pods" {
         targets    = discovery.kubernetes.pods.targets
-        forward_to = [loki.write.local_loki.receiver]
+        forward_to = [loki.relabel.kubernetes_logs.receiver]
       }
 
       // Envia os logs para o gateway do Loki
@@ -45,7 +86,7 @@ alloy:
 
       // --- TRACES E TELEMETRIA OTLP (TEMPO) ---
 
-      // Recebe Traces e métricas avançadas via protocolo OTLP (da sua app Flask)
+      // Recebe Traces e métricas via protocolo OTLP (da sua app Flask)
       otelcol.receiver.otlp "default" {
         grpc { endpoint = "0.0.0.0:4317" }
         http { endpoint = "0.0.0.0:4318" }
@@ -53,25 +94,49 @@ alloy:
         output {
           traces  = [otelcol.exporter.otlp.local_tempo.input]
           metrics = [otelcol.exporter.prometheus.to_mimir.input]
-          logs    = [otelcol.exporter.loki.to_loki.input]
         }
       }
 
-      // Converte e envia métricas OTLP para o Mimir
-      otelcol.exporter.prometheus "to_mimir" {
-        forward_to = [prometheus.remote_write.local_mimir.receiver]
-      }
-
-      // Converte e envia logs OTLP para o Loki
-      otelcol.exporter.loki "to_loki" {
+      // Componente de Relabeling Unificado (apenas para logs de disco)
+      loki.relabel "kubernetes_logs" {
         forward_to = [loki.write.local_loki.receiver]
-      }
 
-      // Envia Traces para o Tempo
-      otelcol.exporter.otlp "local_tempo" {
-        client {
-          endpoint = "tempo.monitoring.svc.cluster.local:4317"
-          tls { insecure = true }
+        // Regras para logs vindos do disco (__meta_kubernetes...)
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container"
+        }
+
+        // Regras para logs vindos do OTLP (enriquecidos pelo processador)
+        rule {
+          source_labels = ["k8s_namespace_name"]
+          target_label  = "namespace"
+        }
+        rule {
+          source_labels = ["k8s_pod_name"]
+          target_label  = "pod"
+        }
+        rule {
+          source_labels = ["k8s_container_name"]
+          target_label  = "container"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          target_label  = "app"
+        }
+
+        rule {
+          replacement  = "meu-cluster-minikube"
+          target_label = "cluster"
         }
       }
     create: true
@@ -92,8 +157,14 @@ alloy:
   livenessProbe: {}
   mounts:
     dockercontainers: false
-    extra: []
-    varlog: false
+    extra:
+    - mountPath: /var/log/pods
+      name: varlogpods
+      readOnly: true
+    - mountPath: /var/log/containers
+      name: varlogcontainers
+      readOnly: true
+    varlog: true
   resources: {}
   securityContext: {}
   stabilityLevel: generally-available
@@ -182,7 +253,13 @@ controller:
   updateStrategy: {}
   volumeClaimTemplates: []
   volumes:
-    extra: []
+    extra:
+    - hostPath:
+        path: /var/log/pods
+      name: varlogpods
+    - hostPath:
+        path: /var/log/containers
+      name: varlogcontainers
 crds:
   create: true
   global:
