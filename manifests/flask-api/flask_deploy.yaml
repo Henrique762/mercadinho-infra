@@ -43,13 +43,13 @@ spec:
               value: "none"
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"
-  strategy:
-    canary:
-      # steps:
-      #   - setWeight: 50
-      #   - pause: {}
-      #   - setWeight: 75
-      #   - pause: {}
-      #   - setWeight: 100
-      maxSurge: "25%"
-      maxUnavailable: 0
+  # strategy:
+  #   canary:
+  #     # steps:
+  #     #   - setWeight: 50
+  #     #   - pause: {}
+  #     #   - setWeight: 75
+  #     #   - pause: {}
+  #     #   - setWeight: 100
+  #     maxSurge: "25%"
+  #     maxUnavailable: 0
