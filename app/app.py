@@ -1,3 +1,13 @@
+import logging
+import sys
+
+# Configuração básica de logging para enviar logs para o stdout
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+
 from src.config.config import app, db
 from src.Application.Controllers.route import cadastro_blueprint, ativacao_blueprint, venda_blueprint, login_blueprint, produtos_bp, health_bp
 from flask_cors import CORS
