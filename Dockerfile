@@ -16,5 +16,8 @@ COPY app/ .
 # Expõe a porta que a aplicação vai rodar
 EXPOSE 8888
 
-# Comando para iniciar o Gunicorn
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8888", "app:app"]
+# Garante que os logs do Python sejam enviados direto para o stdout sem buffering
+ENV PYTHONUNBUFFERED=1
+
+# Comando para iniciar o Gunicorn com logs habilitados para stdout
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8888", "--access-logfile", "-", "--error-logfile", "-", "app:app"]
