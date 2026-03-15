@@ -1,0 +1,43 @@
+alloy:
+  configMap:
+    content: |
+      discovery.kubernetes "all_pods" {
+        role = "pod"
+      }
+
+      // 1. Scrape para descobrir e coletar de qualquer Pod que tenha o endpoint /metrics (Auto-Discovery)
+      prometheus.scrape "kubernetes_pods" {
+        targets    = discovery.kubernetes.all_pods.targets
+        forward_to = [prometheus.remote_write.mimir.receiver]
+      }
+
+      // 2. Scrape específico para o kube-state-metrics (Métricas de estado do cluster)
+      prometheus.scrape "kube_state" {
+        targets = [
+          {"__address__" = "kube-state-metrics.monitoring.svc:8080"},
+        ]
+        forward_to = [prometheus.remote_write.mimir.receiver]
+      }
+
+      // 3. Scrape específico para o node-exporter (Métricas de hardware do nó)
+      prometheus.scrape "node_exporter" {
+        targets = [
+          {"__address__" = "node-exporter-prometheus-node-exporter.monitoring.svc:9100"},
+        ]
+        forward_to = [prometheus.remote_write.mimir.receiver]
+      }
+
+      // Envia tudo para o Mimir
+      prometheus.remote_write "mimir" {
+        endpoint {
+          url = "http://mimir-gateway.monitoring.svc:80/api/v1/push"
+        }
+      }
+    create: true
+
+rbac:
+  create: true
+  clusterRules:
+  - apiGroups: [""]
+    resources: ["pods", "namespaces", "nodes", "services", "endpoints"]
+    verbs: ["get", "list", "watch"]

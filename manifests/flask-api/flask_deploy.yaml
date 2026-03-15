@@ -11,7 +11,7 @@ metadata:
   name: rollout-api-flask
   namespace: flask-api
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: flask-api
