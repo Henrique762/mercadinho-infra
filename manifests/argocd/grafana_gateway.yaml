@@ -7,7 +7,7 @@ spec:
   parentRefs:
   - name: main-gateway
     namespace: gateway-system
-    sectionName: grafana-https
+    sectionName: https
   hostnames:
   - "grafana.henrique.local"
   rules:

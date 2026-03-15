@@ -7,7 +7,7 @@ spec:
   parentRefs:
   - name: main-gateway
     namespace: gateway-system
-    sectionName: flask-api-https
+    sectionName: https
   hostnames:
   - "api.henrique.local"
   rules:

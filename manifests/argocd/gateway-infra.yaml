@@ -18,32 +18,7 @@ metadata:
 spec:
   gatewayClassName: envoy-gateway
   listeners:
-  - name: flask-api-https
-    hostname: "api.henrique.local"
-    port: 443
-    protocol: HTTPS
-    tls:
-      mode: Terminate
-      certificateRefs:
-      - name: wildcard-tls-secret
-        namespace: gateway-system
-    allowedRoutes:
-      namespaces:
-        from: All
-  - name: argocd-https
-    hostname: "argocd.henrique.local"
-    port: 443
-    protocol: HTTPS
-    tls:
-      mode: Terminate
-      certificateRefs:
-      - name: wildcard-tls-secret
-        namespace: gateway-system
-    allowedRoutes:
-      namespaces:
-        from: All
-  - name: grafana-https
-    hostname: "grafana.henrique.local"
+  - name: https
     port: 443
     protocol: HTTPS
     tls:

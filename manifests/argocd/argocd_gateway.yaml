@@ -7,7 +7,7 @@ spec:
   parentRefs:
   - name: main-gateway
     namespace: gateway-system
-    sectionName: argocd-https
+    sectionName: https
   hostnames:
   - "argocd.henrique.local"
   rules:
