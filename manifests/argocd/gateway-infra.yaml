@@ -25,8 +25,8 @@ spec:
     tls:
       mode: Terminate
       certificateRefs:
-      - name: flask-api-tls
-        namespace: flask-api
+      - name: wildcard-tls-secret
+        namespace: gateway-system
     allowedRoutes:
       namespaces:
         from: All
@@ -37,8 +37,8 @@ spec:
     tls:
       mode: Terminate
       certificateRefs:
-      - name: argocd-tls
-        namespace: argocd
+      - name: wildcard-tls-secret
+        namespace: gateway-system
     allowedRoutes:
       namespaces:
         from: All
@@ -49,8 +49,8 @@ spec:
     tls:
       mode: Terminate
       certificateRefs:
-      - name: grafana-tls
-        namespace: monitoring
+      - name: wildcard-tls-secret
+        namespace: gateway-system
     allowedRoutes:
       namespaces:
         from: All
