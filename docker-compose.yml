@@ -21,9 +21,21 @@ services:
     image: mercadinho-flask-api:3.0
     environment:
       DATABASE_URL: postgresql://postgres:admintesteh@postgresql-db-mercadinho:5432/postgres
-      # "postgresql://postgres:admintesteh@postgres-h.caisrwnnknl6.us-east-1.rds.amazonaws.com:5432/postgres"
     ports:
       - 8888:8888
+    networks:
+      - mercadinho_network
+
+  frontend:
+    depends_on:
+      - flask-api
+    container_name: mercado-front
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: mercadinho-frontend:1.0
+    ports:
+      - 8081:80
     networks:
       - mercadinho_network
 

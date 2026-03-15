@@ -1,0 +1,43 @@
+.login {
+  display: grid;
+  background: #fff;
+  border-radius: 0.5rem;
+  grid-template-columns: 1fr 1fr;
+  padding: 2rem;
+  gap: 1rem;
+  min-height: 90vh;
+}
+
+.containerImage {
+  background-image: url('../../assets/cadastro.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 0.5rem;
+}
+
+.containerLogin {
+  display: grid;
+  gap: 1rem;
+  align-self: center;
+}
+
+.title {
+  font-size: 2rem;
+}
+
+.form {
+  display: grid;
+  gap: 1rem;
+}
+
+.button {
+  justify-self: start;
+}
+
+.cadastro a {
+  color: #b5303b;
+}
+
+.error {
+  color: red;
+}
