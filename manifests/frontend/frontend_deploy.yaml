@@ -46,7 +46,7 @@ spec:
     namespace: gateway-system
     sectionName: https
   hostnames:
-  - "henrique.local"
+  - "frontend.henrique.local"
   rules:
   - matches:
     - path:
