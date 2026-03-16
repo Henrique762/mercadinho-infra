@@ -12,7 +12,13 @@ from src.config.config import app, db
 from src.Application.Controllers.route import cadastro_blueprint, ativacao_blueprint, venda_blueprint, login_blueprint, produtos_bp, health_bp
 from flask_cors import CORS
 
-# CORS(app, origins=["http://localhost:5173"])
+# Configuração do CORS para permitir o frontend
+CORS(app, origins=[
+    "https://frontend.henrique.local",
+    "http://frontend.henrique.local",
+    "http://localhost:8081",
+    "http://localhost:5173"
+])
 
 app.register_blueprint(cadastro_blueprint)
 app.register_blueprint(ativacao_blueprint)
