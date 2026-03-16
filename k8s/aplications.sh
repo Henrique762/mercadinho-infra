@@ -50,6 +50,10 @@ helm install prometheus prometheus-community/prometheus \
   --namespace monitoring \
   --create-namespace
 
+##### JENKINS INSTALLATION #####
+helm repo add jenkins https://charts.jenkins.io \
+helm install jenkins jenkins/jenkins --namespace jenkins --create-namespace
+
 
 
 

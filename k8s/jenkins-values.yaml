@@ -1,0 +1,17 @@
+controller:
+  componentName: "jenkins-controller"
+  image:
+    registry: "docker.io"
+    repository: "jenkins/jenkins"
+    tag: "2.541.2-jdk21"
+  persistence:
+    enabled: true
+    size: "8Gi"
+    storageClass: "standard"
+  installPlugins: false
+  sidecars:
+    configAutoReload:
+      enabled: true
+persistence:
+  enabled: true
+  size: 8Gi
