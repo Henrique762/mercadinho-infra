@@ -3,10 +3,6 @@ controller:
   runAsGroup: 1000
   fsGroup: 1000
   componentName: "jenkins-controller"
-  image:
-    registry: "docker.io"
-    repository: "jenkins/jenkins"
-    tag: "2.541.2-jdk21"
   podSecurityContextOverride:
     runAsNonRoot: false
   customInitContainers:
@@ -23,7 +19,12 @@ controller:
     enabled: true
     size: "8Gi"
     storageClass: "standard"
-  installPlugins: false
+  installPlugins:
+    - kubernetes:4423.vb_59f230b_ce53
+    - workflow-aggregator:608.v67378e9d3db_1
+    - git:5.10.0
+    - configuration-as-code:2053.vb_0da_47381a_25
 persistence:
   enabled: true
   size: 8Gi
+
