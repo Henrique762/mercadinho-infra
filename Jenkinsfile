@@ -70,7 +70,7 @@ spec:
                 
                 container('trivy') {
                     echo "🛡️ Executando análise de vulnerabilidades no arquivo tar..."
-                    sh "trivy image --input ${TAR_FILE} --severity HIGH,CRITICAL --no-progress"
+                    sh "trivy image --input ${TAR_FILE} --severity HIGH,CRITICAL --exit-code 1 --no-progress"
                 }
             }
         }
