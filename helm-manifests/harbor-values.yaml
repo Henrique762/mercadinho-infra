@@ -4,19 +4,15 @@ expose:
     name: harbor-expose
     ports:
       httpPort: 80
-      httpsPort: 443
   tls:
-    enabled: true
-    auto:
-      commonName: "harbor.henrique.local"
+    enabled: false
 
 externalURL: https://harbor.henrique.local
 
 # Otimizações para Homelab
-harborAdminPassword: "admin" # Troque após o primeiro acesso
+harborAdminPassword: "Harbor12345" # Troque após o primeiro acesso
 persistence:
-  enabled: true
-  resourcePolicy: "keep"
+  enabled: false # Em Homelab (Minikube/Docker), a persistência de hostpath causa erros de permissão insolúveis via YAML
 
 # Desabilitando o que não é essencial para economizar recursos
 notary:
@@ -62,7 +58,7 @@ registry:
       memory: 256Mi
       cpu: 500m
 trivy:
-  enabled: true # Mantido para segurança básica
+  enabled: true
   replicas: 1
   resources:
     requests:
