@@ -10,7 +10,11 @@ pipeline {
 
     stages {
         stage('Build Image (Kaniko)') {
-            // Este estágio cria um Pod contendo apenas o Kaniko
+            // Condição: Só rode este estágio SE houver commits na pasta "backend/".
+            // Acionado via Webhook.
+            when {
+                changeset "backend/**"
+            }
             agent {
                 kubernetes {
                     yaml '''
@@ -32,26 +36,28 @@ spec:
                 checkout scm
                 
                 container('kaniko') {
-                    echo "🔨 Construindo e exportando a imagem usando Kaniko (Isolado do Nó, sem Docker Daemon)..."
-                    // O Kaniko compila a imagem e exporta como arquivo tar (--no-push evita o envio para um registry externo)
+                    echo "🔨 Alterações no backend detectadas! Construindo a imagem via Kaniko..."
+                    // O Kaniko compila a imagem e exporta como arquivo tar
                     sh '''
                       /kaniko/executor \
                         --context `pwd`/backend \
                         --dockerfile `pwd`/backend/Dockerfile \
                         --no-push \
-                        --tar-Path `pwd`/${TAR_FILE} \
+                        --tar-path `pwd`/${TAR_FILE} \
                         --destination ${IMAGE_NAME}:${IMAGE_TAG}
                     '''
                 }
                 
                 echo "📦 Salvando a imagem gerada na memória do Jenkins (Stash)..."
-                // O Jenkins faz o upload do arquivo tar do workspace do agente para o Controller
                 stash name: 'built-image', includes: "${TAR_FILE}"
             }
         }
 
         stage('Security Scan (Trivy)') {
-            // Este estágio cria um Pod TOTALMENTE NOVO e isolado, apenas com o Trivy
+            // Este estágio também só roda se o backend sofreu alterações
+            when {
+                changeset "backend/**"
+            }
             agent {
                 kubernetes {
                     yaml '''
@@ -68,15 +74,26 @@ spec:
                 }
             }
             steps {
-                // Precisamos baixar o arquivo que o estágio anterior salvou, pois este workspace é novo.
                 echo "📥 Recuperando a imagem gerada (Unstash)..."
                 unstash 'built-image'
                 
                 container('trivy') {
-                    echo "🛡️ Executando análise de vulnerabilidades no arquivo tar gerado pelo Kaniko..."
-                    // O Trivy lê a imagem diretamente do arquivo tar extraído
+                    echo "🛡️ Executando análise de vulnerabilidades no arquivo tar..."
                     sh "trivy image --input ${TAR_FILE} --severity HIGH,CRITICAL --no-progress"
                 }
+            }
+        }
+        
+        stage('Skip Message') {
+            // Estágio apenas para log visual caso o webhook dispare por conta 
+            // de alterações em outras pastas (ex: frontend/ ou k8s/)
+            when {
+                not {
+                    changeset "backend/**"
+                }
+            }
+            steps {
+                echo "⏭️ Nenhuma alteração detectada no diretório 'backend/'. Pulando o build da API."
             }
         }
     }
