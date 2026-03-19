@@ -8,7 +8,8 @@ WORKDIR /app
 COPY /app/requirements.txt .
 
 # Instala as dependências
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip wheel setuptools jaraco.context && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copia o restante da aplicação para o container
 COPY app/ .
