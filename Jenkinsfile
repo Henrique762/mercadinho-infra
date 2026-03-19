@@ -10,11 +10,6 @@ pipeline {
 
     stages {
         stage('Build Image (Kaniko)') {
-            // Condição: Só rode este estágio SE houver commits na pasta "backend/".
-            // Acionado via Webhook.
-            when {
-                changeset "backend/**"
-            }
             agent {
                 kubernetes {
                     yaml '''
@@ -54,10 +49,6 @@ spec:
         }
 
         stage('Security Scan (Trivy)') {
-            // Este estágio também só roda se o backend sofreu alterações
-            when {
-                changeset "backend/**"
-            }
             agent {
                 kubernetes {
                     yaml '''
@@ -81,19 +72,6 @@ spec:
                     echo "🛡️ Executando análise de vulnerabilidades no arquivo tar..."
                     sh "trivy image --input ${TAR_FILE} --severity HIGH,CRITICAL --no-progress"
                 }
-            }
-        }
-        
-        stage('Skip Message') {
-            // Estágio apenas para log visual caso o webhook dispare por conta 
-            // de alterações em outras pastas (ex: frontend/ ou k8s/)
-            when {
-                not {
-                    changeset "backend/**"
-                }
-            }
-            steps {
-                echo "⏭️ Nenhuma alteração detectada no diretório 'backend/'. Pulando o build da API."
             }
         }
     }
