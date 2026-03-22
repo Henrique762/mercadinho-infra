@@ -37,7 +37,7 @@ core:
       memory: 128Mi
       cpu: 100m
     limits:
-      memory: 256Mi
+      memory: 512Mi
       cpu: 500m
 jobservice:
   replicas: 1
@@ -55,7 +55,7 @@ registry:
       memory: 128Mi
       cpu: 100m
     limits:
-      memory: 256Mi
+      memory: 512Mi
       cpu: 500m
 trivy:
   enabled: true
