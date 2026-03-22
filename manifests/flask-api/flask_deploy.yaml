@@ -24,7 +24,7 @@ spec:
         - name: harbor-pull-secret
       containers:
         - name: flask-api
-          image: harbor.henrique.local/flask-api/mercadinho-flask-api:8
+          image: harbor.henrique.local/flask-api/mercadinho-flask-api:5
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8888
