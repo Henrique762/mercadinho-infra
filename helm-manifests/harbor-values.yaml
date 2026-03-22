@@ -38,6 +38,7 @@ database:
       limits:
         memory: 512Mi
         cpu: 500m
+
 redis:
   type: internal
   internal:
@@ -48,3 +49,54 @@ redis:
       limits:
         memory: 128Mi
         cpu: 100m
+
+registry:
+  relativeurls: true
+  extraInitContainers:
+    - name: fix-permissions
+      image: busybox
+      command: ["/bin/sh", "-c", "chown -R 10000:10000 /storage"]
+      volumeMounts:
+        - name: registry-data
+          mountPath: /storage
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+
+jobservice:
+  extraInitContainers:
+    - name: fix-permissions
+      image: busybox
+      command: ["/bin/sh", "-c", "chown -R 10000:10000 /var/log/jobs"]
+      volumeMounts:
+        - name: job-logs
+          mountPath: /var/log/jobs
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 50m
+    limits:
+      memory: 128Mi
+      cpu: 100m
+
+core:
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+
+portal:
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 50m
+    limits:
+      memory: 128Mi
+      cpu: 100m
