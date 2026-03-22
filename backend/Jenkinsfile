@@ -119,7 +119,8 @@ spec:
                         echo "📝 Atualizando a versão da imagem no manifesto e enviando para o repositório Git..."
                         
                         sh """
-                          # Configurar a identidade do Git
+                          # Configurar a identidade do Git e diretório seguro
+                          git config --global --add safe.directory '*'
                           git config --global user.email "jenkins@henrique.local"
                           git config --global user.name "Jenkins CI"
                           
