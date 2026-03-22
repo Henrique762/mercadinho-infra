@@ -6,7 +6,7 @@ pipeline {
         // Apontamento para o projeto padrão 'library' no seu Harbor local
         HARBOR_REGISTRY = "harbor.henrique.local/library"
         IMAGE_NAME = "mercadinho-flask-api"
-        IMAGE_TAG = "ci-build"
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
         FULL_IMAGE = "${HARBOR_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
     }
 
@@ -77,6 +77,54 @@ spec:
                         // A flag --insecure é usada porque o certificado do cluster local é autoassinado
                         sh """
                           trivy image --insecure --severity HIGH,CRITICAL --exit-code 1 --no-progress ${FULL_IMAGE}
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Update Manifest & Push') {
+            agent {
+                kubernetes {
+                    yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: git
+    image: alpine/git:2.40.1
+    command:
+    - sleep
+    args:
+    - 9999999
+'''
+                }
+            }
+            steps {
+                // Requer uma credencial no Jenkins do tipo 'Username with password' ou 'Secret text' para autenticar no GitHub
+                withCredentials([usernamePassword(credentialsId: 'github-creds', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    container('git') {
+                        echo "📝 Atualizando a versão da imagem no manifesto e enviando para o repositório Git..."
+                        
+                        sh """
+                          # Configurar a identidade do Git
+                          git config --global user.email "jenkins@henrique.local"
+                          git config --global user.name "Jenkins CI"
+                          
+                          # Modificar a linha da imagem no arquivo do Rollout/Deployment
+                          sed -i "s|image: .*|image: ${FULL_IMAGE}|g" manifests/flask-api/flask_deploy.yaml
+                          
+                          # Verificar se houve mudanças
+                          git status
+                          
+                          # Adicionar, Commitar e Enviar (Push)
+                          git add manifests/flask-api/flask_deploy.yaml
+                          git commit -m "ci/cd: Atualiza a imagem da API para a tag ${IMAGE_TAG} [skip ci]" || echo "Nenhuma alteração para commitar"
+                          
+                          # Configurar URL com credenciais para o push (adaptado para o seu repositório)
+                          # NOTA: Ajuste a URL abaixo se necessário. Estamos utilizando HTTPS.
+                          git remote set-url origin https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Henrique762/mercadinho.git
+                          git push origin HEAD:main
                         """
                     }
                 }
