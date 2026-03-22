@@ -10,67 +10,27 @@ expose:
 externalURL: https://harbor.henrique.local
 
 # Otimizações para Homelab
-harborAdminPassword: "Harbor12345" # Troque após o primeiro acesso
+harborAdminPassword: "Harbor12345"
 persistence:
-  enabled: true # Em Homelab (Minikube/Docker), a persistência de hostpath causa erros de permissão insolúveis via YAML
-
-# Desabilitando o que não é essencial para economizar recursos
-notary:
-  enabled: false
-chartmuseum:
-  enabled: false
-
-# Limites de Recursos para Homelab (Poupando CPU e RAM)
-portal:
-  replicas: 1
-  resources:
-    requests:
-      memory: 64Mi
-      cpu: 50m
-    limits:
-      memory: 128Mi
-      cpu: 100m
-core:
-  replicas: 1
-  resources:
-    requests:
-      memory: 128Mi
-      cpu: 100m
-    limits:
-      memory: 512Mi
-      cpu: 500m
-jobservice:
-  replicas: 1
-  resources:
-    requests:
-      memory: 128Mi
-      cpu: 100m
-    limits:
-      memory: 256Mi
-      cpu: 500m
-registry:
-  replicas: 1
-  relativeurls: true
-  resources:
-    requests:
-      memory: 128Mi
-      cpu: 100m
-    limits:
-      memory: 512Mi
-      cpu: 500m
-trivy:
   enabled: true
-  replicas: 1
-  resources:
-    requests:
-      memory: 128Mi
-      cpu: 100m
-    limits:
-      memory: 512Mi
-      cpu: 500m
+
+# Configurações de banco de dados para resolver erros de permissão em Homelab
 database:
   type: internal
   internal:
+    # Init container para corrigir permissões de proprietário (UID 999 para Postgres)
+    extrInitContainers:
+      - name: fix-permissions
+        image: busybox
+        command: ["/bin/sh", "-c", "chown -R 999:999 /var/lib/postgresql/data && chmod -R 700 /var/lib/postgresql/data"]
+        volumeMounts:
+          - name: database-data
+            mountPath: /var/lib/postgresql/data
+    # Aumentando o tempo de espera do healthcheck para dar tempo ao initdb
+    livenessProbe:
+      initialDelaySeconds: 300
+    readinessProbe:
+      initialDelaySeconds: 10
     resources:
       requests:
         memory: 256Mi

@@ -1,4 +1,6 @@
 controller:
+  admin:
+    password: "Jenkins12345"
   runAsUser: 1000
   runAsGroup: 1000
   fsGroup: 1000

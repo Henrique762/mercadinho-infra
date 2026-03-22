@@ -30,15 +30,17 @@ echo "✅ Storage Class instalado com sucesso!"
 
 echo "🚀 Aplicando Repo do ArgoCD"
 
-kubectl apply -f /mercadinho//argocd/repo.yaml
+kubectl apply -f argocd/repo.yaml
 
 echo "✅ Repo instalado com sucesso!"
 
 echo "🚀 Aplicando Application do ArgoCD"
 
-kubectl apply -f /mercadinho/argocd/app.yaml
+kubectl apply -f argocd/app-flask.yaml
+kubectl apply -f argocd/app-frontend.yaml
+kubectl apply -f argocd/app-management-resources.yaml
 
-echo "✅ Application do ArgoCD instalado com sucesso!"
+echo "✅ Applications do ArgoCD instaladas com sucesso!"
 
 
 kubectl create namespace argo-rollouts
