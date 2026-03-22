@@ -134,9 +134,8 @@ spec:
                           git add manifests/flask-api/flask_deploy.yaml
                           git commit -m "ci/cd: Atualiza a imagem da API para a tag ${IMAGE_TAG} [skip ci]" || echo "Nenhuma alteração para commitar"
                           
-                          # Configurar URL com credenciais para o push (adaptado para o seu repositório)
-                          # NOTA: Ajuste a URL abaixo se necessário. Estamos utilizando HTTPS.
-                          git remote set-url origin https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Henrique762/mercadinho.git
+                          # Configurar URL com credenciais (usando x-access-token para evitar erro com e-mails no username)
+                          git remote set-url origin https://x-access-token:${GIT_PASSWORD}@github.com/Henrique762/mercadinho.git
                           git push origin HEAD:main
                         """
                     }
