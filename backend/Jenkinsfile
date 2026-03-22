@@ -19,7 +19,7 @@ apiVersion: v1
 kind: Pod
 spec:
   hostAliases:
-  - ip: "10.101.167.115"
+  - ip: "10.99.67.213"
     hostnames:
     - "harbor.henrique.local"
   containers:
@@ -65,7 +65,7 @@ apiVersion: v1
 kind: Pod
 spec:
   hostAliases:
-  - ip: "10.101.167.115"
+  - ip: "10.99.67.213"
     hostnames:
     - "harbor.henrique.local"
   containers:
@@ -99,7 +99,7 @@ apiVersion: v1
 kind: Pod
 spec:
   hostAliases:
-  - ip: "10.101.167.115"
+  - ip: "10.99.67.213"
     hostnames:
     - "harbor.henrique.local"
   containers:
