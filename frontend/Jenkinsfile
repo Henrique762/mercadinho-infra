@@ -3,11 +3,13 @@ pipeline {
     agent none 
     
     environment {
-        // Apontamento para o projeto 'frontend' no seu Harbor local
-        HARBOR_REGISTRY = "harbor.henrique.local/frontend"
+        // Apontamento direto para o serviço interno do Harbor (ignora Envoy/HTTPS)
+        HARBOR_REGISTRY = "harbor-core.harbor.svc.cluster.local/frontend"
         IMAGE_NAME = "mercadinho-frontend"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         FULL_IMAGE = "${HARBOR_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
+        // Imagem para ser salva no manifesto (via external URL)
+        PUBLIC_IMAGE = "harbor.henrique.local/frontend/${IMAGE_NAME}:${IMAGE_TAG}"
     }
 
     stages {
@@ -18,10 +20,6 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
-  hostAliases:
-  - ip: "10.101.167.115"
-    hostnames:
-    - "harbor.henrique.local"
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
@@ -36,20 +34,20 @@ spec:
                 // Traz o código para o workspace deste agente
                 checkout scm
                 
-                // Exige a criação prévia de uma credencial no Jenkins do tipo 'Username with password' com o ID 'harbor-creds'
                 withCredentials([usernamePassword(credentialsId: 'harbor-creds', passwordVariable: 'HARBOR_PASSWORD', usernameVariable: 'HARBOR_USERNAME')]) {
                     container('kaniko') {
-                        echo "🔨 Construindo e enviando a imagem do Frontend para o Harbor via Kaniko..."
+                        echo "🔨 Construindo e enviando a imagem do Frontend para o Harbor via Kaniko (Rede Interna)..."
                         
-                        // Configura a autenticação do Harbor injetando no arquivo config.json do Kaniko
                         sh '''
                           mkdir -p /kaniko/.docker
-                          echo "{\\"auths\\":{\\"harbor.henrique.local\\":{\\"auth\\":\\"`echo -n ${HARBOR_USERNAME}:${HARBOR_PASSWORD} | base64 | tr -d '\\n'`\\"}}}" > /kaniko/.docker/config.json
+                          echo "{\\"auths\\":{\\"harbor-core.harbor.svc.cluster.local\\":{\\"auth\\":\\"`echo -n ${HARBOR_USERNAME}:${HARBOR_PASSWORD} | base64 | tr -d '\\n'`\\"}}}" > /kaniko/.docker/config.json
                           
                           /kaniko/executor \
                             --context `pwd`/frontend \
                             --dockerfile `pwd`/frontend/Dockerfile \
                             --destination ${FULL_IMAGE} \
+                            --insecure \
+                            --insecure-pull \
                             --skip-tls-verify
                         '''
                     }
@@ -64,10 +62,6 @@ spec:
 apiVersion: v1
 kind: Pod
 spec:
-  hostAliases:
-  - ip: "10.101.167.115"
-    hostnames:
-    - "harbor.henrique.local"
   containers:
   - name: trivy
     image: aquasec/trivy:latest
@@ -78,11 +72,9 @@ spec:
                 }
             }
             steps {
-                // O Trivy lê automaticamente as variáveis TRIVY_USERNAME e TRIVY_PASSWORD para autenticação
                 withCredentials([usernamePassword(credentialsId: 'harbor-creds', passwordVariable: 'TRIVY_PASSWORD', usernameVariable: 'TRIVY_USERNAME')]) {
                     container('trivy') {
-                        echo "🛡️ Executando análise de vulnerabilidades diretamente no Harbor..."
-                        // A flag --insecure é usada porque o certificado do cluster local é autoassinado
+                        echo "🛡️ Executando análise de vulnerabilidades na rede interna..."
                         sh """
                           trivy image --insecure --severity HIGH,CRITICAL --exit-code 1 --no-progress ${FULL_IMAGE}
                         """
@@ -98,10 +90,6 @@ spec:
 apiVersion: v1
 kind: Pod
 spec:
-  hostAliases:
-  - ip: "10.101.167.115"
-    hostnames:
-    - "harbor.henrique.local"
   containers:
   - name: git
     image: alpine/git:2.40.1
@@ -113,19 +101,17 @@ spec:
                 }
             }
             steps {
-                // Requer uma credencial no Jenkins do tipo 'Username with password' ou 'Secret text' para autenticar no GitHub
                 withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     container('git') {
                         echo "📝 Atualizando a versão da imagem no manifesto do frontend e enviando para o repositório Git..."
                         
                         sh """
-                          # Configurar a identidade do Git e diretório seguro
                           git config --global --add safe.directory '*'
                           git config --global user.email "jenkins@henrique.local"
                           git config --global user.name "Jenkins CI"
                           
-                          # Modificar a linha da imagem no arquivo do Deployment
-                          sed -i "s|image: .*|image: ${FULL_IMAGE}|g" manifests/frontend/frontend_deploy.yaml
+                          # Modificar a linha da imagem usando a PUBLIC_IMAGE (harbor.henrique.local)
+                          sed -i "s|image: .*|image: ${PUBLIC_IMAGE}|g" manifests/frontend/frontend_deploy.yaml
                           
                           # Verificar se houve mudanças
                           git status
