@@ -50,6 +50,7 @@ jobservice:
       cpu: 500m
 registry:
   replicas: 1
+  relativeurls: true
   resources:
     requests:
       memory: 128Mi
