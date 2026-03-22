@@ -19,6 +19,13 @@ spec:
         env:
         - name: VITE_API_URL
           value: "https://api.henrique.local"
+        resources:
+          requests:
+            cpu: "20m"
+            memory: "32Mi"
+          limits:
+            cpu: "100m"
+            memory: "64Mi"
         ports:
         - containerPort: 80
 ---
