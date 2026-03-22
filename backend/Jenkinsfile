@@ -3,8 +3,8 @@ pipeline {
     agent none 
     
     environment {
-        // Apontamento para o projeto padrão 'library' no seu Harbor local
-        HARBOR_REGISTRY = "harbor.henrique.local/library"
+        // Apontamento para o projeto 'flask-api' no seu Harbor local
+        HARBOR_REGISTRY = "harbor.henrique.local/flask-api"
         IMAGE_NAME = "mercadinho-flask-api"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         FULL_IMAGE = "${HARBOR_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"

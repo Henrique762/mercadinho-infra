@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: flask-api
-          image: mercadinho-flask-api:3.1
+          image: harbor.henrique.local/flask-api/mercadinho-flask-api:1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8888
