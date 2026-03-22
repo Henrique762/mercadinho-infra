@@ -12,7 +12,7 @@ externalURL: https://harbor.henrique.local
 # Otimizações para Homelab
 harborAdminPassword: "Harbor12345" # Troque após o primeiro acesso
 persistence:
-  enabled: false # Em Homelab (Minikube/Docker), a persistência de hostpath causa erros de permissão insolúveis via YAML
+  enabled: true # Em Homelab (Minikube/Docker), a persistência de hostpath causa erros de permissão insolúveis via YAML
 
 # Desabilitando o que não é essencial para economizar recursos
 notary:

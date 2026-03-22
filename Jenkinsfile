@@ -3,13 +3,15 @@ pipeline {
     agent none 
     
     environment {
+        // Apontamento para o projeto padrão 'library' no seu Harbor local
+        HARBOR_REGISTRY = "harbor.henrique.local/library"
         IMAGE_NAME = "mercadinho-flask-api"
         IMAGE_TAG = "ci-build"
-        TAR_FILE = "mercadinho-api-image.tar"
+        FULL_IMAGE = "${HARBOR_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
     }
 
     stages {
-        stage('Build Image (Kaniko)') {
+        stage('Build & Push Image (Kaniko)') {
             agent {
                 kubernetes {
                     yaml '''
@@ -30,21 +32,24 @@ spec:
                 // Traz o código para o workspace deste agente
                 checkout scm
                 
-                container('kaniko') {
-                    echo "🔨 Alterações no backend detectadas! Construindo a imagem via Kaniko..."
-                    // O Kaniko compila a imagem e exporta como arquivo tar
-                    sh '''
-                      /kaniko/executor \
-                        --context `pwd`/backend \
-                        --dockerfile `pwd`/backend/Dockerfile \
-                        --no-push \
-                        --tar-path `pwd`/${TAR_FILE} \
-                        --destination ${IMAGE_NAME}:${IMAGE_TAG}
-                    '''
+                // Exige a criação prévia de uma credencial no Jenkins do tipo 'Username with password' com o ID 'harbor-creds'
+                withCredentials([usernamePassword(credentialsId: 'harbor-creds', passwordVariable: 'HARBOR_PASSWORD', usernameVariable: 'HARBOR_USERNAME')]) {
+                    container('kaniko') {
+                        echo "🔨 Construindo e enviando a imagem para o Harbor via Kaniko..."
+                        
+                        // Configura a autenticação do Harbor injetando no arquivo config.json do Kaniko
+                        sh '''
+                          mkdir -p /kaniko/.docker
+                          echo "{\\"auths\\":{\\"harbor.henrique.local\\":{\\"auth\\":\\"`echo -n ${HARBOR_USERNAME}:${HARBOR_PASSWORD} | base64 | tr -d '\\n'`\\"}}}" > /kaniko/.docker/config.json
+                          
+                          /kaniko/executor \
+                            --context `pwd`/backend \
+                            --dockerfile `pwd`/backend/Dockerfile \
+                            --destination ${FULL_IMAGE} \
+                            --skip-tls-verify
+                        '''
+                    }
                 }
-                
-                echo "📦 Salvando a imagem gerada na memória do Jenkins (Stash)..."
-                stash name: 'built-image', includes: "${TAR_FILE}"
             }
         }
 
@@ -65,12 +70,15 @@ spec:
                 }
             }
             steps {
-                echo "📥 Recuperando a imagem gerada (Unstash)..."
-                unstash 'built-image'
-                
-                container('trivy') {
-                    echo "🛡️ Executando análise de vulnerabilidades no arquivo tar..."
-                    sh "trivy image --input ${TAR_FILE} --severity HIGH,CRITICAL --exit-code 1 --no-progress"
+                // O Trivy lê automaticamente as variáveis TRIVY_USERNAME e TRIVY_PASSWORD para autenticação
+                withCredentials([usernamePassword(credentialsId: 'harbor-creds', passwordVariable: 'TRIVY_PASSWORD', usernameVariable: 'TRIVY_USERNAME')]) {
+                    container('trivy') {
+                        echo "🛡️ Executando análise de vulnerabilidades diretamente no Harbor..."
+                        // A flag --insecure é usada porque o certificado do cluster local é autoassinado
+                        sh """
+                          trivy image --insecure --severity HIGH,CRITICAL --exit-code 1 --no-progress ${FULL_IMAGE}
+                        """
+                    }
                 }
             }
         }
