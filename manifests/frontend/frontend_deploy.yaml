@@ -13,6 +13,8 @@ spec:
       labels:
         app: frontend
     spec:
+      imagePullSecrets:
+        - name: harbor-pull-secret
       containers:
       - name: frontend
         image: mercadinho-frontend:1.0
