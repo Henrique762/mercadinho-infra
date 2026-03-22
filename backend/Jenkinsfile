@@ -114,7 +114,7 @@ spec:
             }
             steps {
                 // Requer uma credencial no Jenkins do tipo 'Username with password' ou 'Secret text' para autenticar no GitHub
-                withCredentials([usernamePassword(credentialsId: 'github-creds', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     container('git') {
                         echo "📝 Atualizando a versão da imagem no manifesto e enviando para o repositório Git..."
                         
