@@ -18,6 +18,10 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
+  hostAliases:
+  - ip: "10.101.167.115"
+    hostnames:
+    - "harbor.henrique.local"
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
@@ -60,6 +64,10 @@ spec:
 apiVersion: v1
 kind: Pod
 spec:
+  hostAliases:
+  - ip: "10.101.167.115"
+    hostnames:
+    - "harbor.henrique.local"
   containers:
   - name: trivy
     image: aquasec/trivy:latest
@@ -90,6 +98,10 @@ spec:
 apiVersion: v1
 kind: Pod
 spec:
+  hostAliases:
+  - ip: "10.101.167.115"
+    hostnames:
+    - "harbor.henrique.local"
   containers:
   - name: git
     image: alpine/git:2.40.1
