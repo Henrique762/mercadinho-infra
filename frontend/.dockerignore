@@ -1,0 +1,34 @@
+# Git
+.git
+.gitignore
+
+# Ambiente e IDEs
+.env
+.env.*
+.env.local
+.vscode/
+.idea/
+
+# Dependências do Node
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+
+# Builds e Distribuições locais (O Vite gera o dist no build)
+dist/
+dist-ssr/
+build/
+
+# Logs
+*.log
+logs
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Ferramentas CI/CD
+Jenkinsfile
+Dockerfile.dev
