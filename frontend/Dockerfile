@@ -9,6 +9,9 @@ RUN npm run build
 # Stage 2: Servindo os arquivos com Nginx
 FROM nginx:alpine
 
+# Upgrade das dependências para corrigir vulnerabilidades de segurança (CVEs)
+RUN apk upgrade --no-cache
+
 # Copia o build do Stage 1
 COPY --from=build /app/dist /usr/share/nginx/html
 
