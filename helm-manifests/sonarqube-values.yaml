@@ -11,19 +11,16 @@ jdbcOverwrite:
 
 resources:
   requests:
-    cpu: 200m
-    memory: 1Gi
+    cpu: 100m
+    memory: 512Mi
   limits:
-    cpu: 800m
-    memory: 1.5Gi
+    cpu: 400m
+    memory: 800Mi
 
 sonarProperties:
-  sonar.web.javaOpts: "-Xmx384m -Xms384m -XX:+UseSerialGC"
-  sonar.search.javaOpts: "-Xmx256m -Xms256m -XX:MaxDirectMemorySize=64m"
-  sonar.ce.javaOpts: "-Xmx256m -Xms256m -XX:+UseSerialGC"
-
-nodeSelector:
-  kubernetes.io/hostname: "minikube-m02"
+  sonar.web.javaOpts: "-Xmx256m -Xms256m -XX:+UseSerialGC"
+  sonar.search.javaOpts: "-Xmx128m -Xms128m -XX:MaxDirectMemorySize=32m"
+  sonar.ce.javaOpts: "-Xmx128m -Xms128m -XX:+UseSerialGC"
 
 startupProbe:
   failureThreshold: 60
