@@ -22,5 +22,8 @@ sonarProperties:
   sonar.search.javaOpts: "-Xmx256m -Xms256m -XX:MaxDirectMemorySize=64m"
   sonar.ce.javaOpts: "-Xmx256m -Xms256m -XX:+UseSerialGC"
 
+nodeSelector:
+  kubernetes.io/hostname: "minikube-m02"
+
 startupProbe:
   failureThreshold: 60
