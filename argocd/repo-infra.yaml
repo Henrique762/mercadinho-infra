@@ -5,12 +5,12 @@ metadata:
     managed-by: argocd.argoproj.io
   labels:
     argocd.argoproj.io/secret-type: repository
-  name: repo-mercadinho
+  name: repo-mercadinho-infra
   namespace: argocd
 data:
   password: Z2hwX2xIUENNY2FhdmQ2SDI5WkVGQjhHelF3OXBqVnNyMDQyOTJXbA==
   project: ZGVmYXVsdA==
   type: Z2l0
-  url: aHR0cHM6Ly9naXRodWIuY29tL0hlbnJpcXVlNzYyL21lcmNhZGluaG8uZ2l0
+  url: aHR0cHM6Ly9naXRodWIuY29tL0hlbnJpcXVlNzYyL21lcmNhZGluaG8taW5mcmEuZ2l0
   username: Z2l0
 type: Opaque
