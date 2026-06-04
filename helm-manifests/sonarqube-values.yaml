@@ -9,3 +9,6 @@ hostAliases:
   - ip: "127.0.0.1"
     hostnames:
       - "off"
+
+startupProbe:
+  failureThreshold: 60
