@@ -1,15 +1,10 @@
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: flask-api-deployment
-#   namespace: flask-api
-#   labels:
-#     app: flask-api
-apiVersion: argoproj.io/v1alpha1
-kind: Rollout
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: rollout-api-flask
+  name: flask-api-deployment
   namespace: flask-api
+  labels:
+    app: flask-api
 spec:
   replicas: 0
   selector:
@@ -39,12 +34,7 @@ spec:
               cpu: "200m"
               memory: "256Mi"
   strategy:
-    canary:
-      # steps:
-      #   - setWeight: 50
-      #   - pause: {}
-      #   - setWeight: 75
-      #   - pause: {}
-      #   - setWeight: 100
-      maxSurge: "25%"
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
       maxUnavailable: 0
