@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/Henrique762/mercadinho.git
+    repoURL: https://github.com/Henrique762/mercadinho-infra.git
     path: manifests/argocd
     targetRevision: HEAD
   destination:
