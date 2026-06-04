@@ -1,14 +1,11 @@
-image:
-  tag: 9.9.8-community
-
 monitoringPasscode: "define_it"
 
-postgresql:
-  enabled: false
+community:
+  enabled: true
 
 jdbcOverwrite:
-  enable: true
-  jdbcUrl: "jdbc:postgresql://postgres.flask-api:5432/postgres"
+  enabled: true
+  jdbcUrl: "jdbc:postgresql://postgres.flask-api:5432/sonar"
   jdbcUsername: "postgres"
   jdbcPassword: "admin"
 
@@ -25,11 +22,5 @@ sonarProperties:
   sonar.search.javaOpts: "-Xmx256m -Xms256m -XX:MaxDirectMemorySize=64m"
   sonar.ce.javaOpts: "-Xmx256m -Xms256m -XX:+UseSerialGC"
 
-hostAliases:
-  - ip: "127.0.0.1"
-    hostnames:
-      - "off"
-
 startupProbe:
   failureThreshold: 60
-
