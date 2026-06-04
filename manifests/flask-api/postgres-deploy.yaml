@@ -31,7 +31,7 @@ metadata:
   name: postgres
   namespace: flask-api
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: postgres
