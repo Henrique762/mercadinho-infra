@@ -155,3 +155,4 @@ dist-ssr
 Senhas
 Senhas/
 ferramentas-ci-cd.txt
+*.crt

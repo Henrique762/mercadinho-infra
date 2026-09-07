@@ -5,6 +5,9 @@ persistence:
 service:
   type: ClusterIP
 
+nodeSelector:
+  kubernetes.io/hostname: minikube-m02
+
 securityContext:
   fsGroup: 472
   runAsGroup: 472
@@ -16,11 +19,36 @@ datasources:
   datasources.yaml:
     apiVersion: 1
     datasources:
+    - name: VictoriaMetrics
+      type: prometheus
+      url: http://victoria-metrics-server.monitoring.svc:8428
+      access: proxy
+      isDefault: true
+      jsonData:
+        httpMethod: POST
+        prometheusType: Prometheus
+    - name: Tempo
+      type: tempo
+      url: http://tempo.monitoring.svc:3200
+      access: proxy
+      isDefault: false
+      jsonData:
+        httpMethod: GET
+        nodeGraph:
+          enabled: true
+        serviceMap:
+          datasourceUid: "P4169E866C3094E38"
+        search:
+          hide: false
+        tracesToLogsV2:
+          customTags:
+            - key: "service.name"
+              value: "service_name"
     - name: Mimir
       type: prometheus
       url: http://mimir-gateway.monitoring.svc:80/prometheus
       access: proxy
-      isDefault: true
+      isDefault: false
       jsonData:
         prometheusType: Mimir
         prometheusVersion: "2.4.0"

@@ -1,0 +1,492 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": false,
+      "title": "📊 Dashboard Kubernetes & Serviços",
+      "type": "link",
+      "url": "/d/k8s-vm-services/kubernetes-cluster-servicos"
+    },
+    {
+      "asDropdown": false,
+      "icon": "compass",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Tempo no Explore",
+      "type": "link",
+      "url": "/explore?left=%7B%22datasource%22:%22Tempo%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22queryType%22:%22traceql%22,%22query%22:%22%7B%7D%22%7D%5D%7D"
+    }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 100,
+      "title": "📊 Pipeline OpenTelemetry & Ingestão de Traces",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null }
+            ]
+          }
+        }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "id": 1,
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "values": false },
+        "textMode": "auto"
+      },
+      "title": "Total de Spans Recebidos",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+          "expr": "sum(otelcol_receiver_accepted_spans{cluster=~\"$cluster\"})",
+          "legendFormat": "Spans Recebidos"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          }
+        }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+      "id": 2,
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "values": false },
+        "textMode": "auto"
+      },
+      "title": "Total de Spans Exportados ao Tempo",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+          "expr": "sum(otelcol_exporter_sent_spans{cluster=~\"$cluster\", exporter=\"otlp/tempo\"})",
+          "legendFormat": "Spans no Tempo"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "unit": "reqps",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "purple", "value": null }
+            ]
+          }
+        }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
+      "id": 3,
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "values": false },
+        "textMode": "auto"
+      },
+      "title": "Taxa de Ingestão de Spans",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+          "expr": "sum(rate(otelcol_receiver_accepted_spans{cluster=~\"$cluster\"}[1m]))",
+          "legendFormat": "Spans/seg"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
+      "id": 4,
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "values": false },
+        "textMode": "auto"
+      },
+      "title": "Spans Rejeitados / Falhos",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+          "expr": "sum(otelcol_receiver_refused_spans{cluster=~\"$cluster\"}) + sum(otelcol_receiver_failed_spans{cluster=~\"$cluster\"})",
+          "legendFormat": "Falhas"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "lineWidth": 2
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 5 },
+      "id": 5,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
+      },
+      "title": "Taxa de Recepção por Receptor / Transporte (Spans/s)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+          "expr": "sum by (receiver, transport) (rate(otelcol_receiver_accepted_spans{cluster=~\"$cluster\"}[1m]))",
+          "legendFormat": "{{receiver}} ({{transport}})"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "lineWidth": 2
+          },
+          "unit": "bytes"
+        }
+      },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 5 },
+      "id": 6,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
+      },
+      "title": "Consumo de Memória do OTel Collector & Tempo",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+          "expr": "sum by (pod) (container_memory_working_set_bytes{cluster=~\"$cluster\", namespace=\"monitoring\", pod=~\"otel-collector.*|tempo.*\", container!=\"\"})",
+          "legendFormat": "{{pod}}"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 12 },
+      "id": 200,
+      "title": "🔍 Busca de Traces Recentes no Grafana Tempo (TraceQL)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "tempo", "uid": "P214B5B846CF3925F" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "traceID" },
+            "properties": [
+              { "id": "displayName", "value": "Trace ID" },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "🔬 Inspecionar Waterfall neste Painel",
+                    "url": "/d/tempo-distributed-tracing?var-traceId=${__value.raw}&${__url_time_range}"
+                  },
+                  {
+                    "title": "🚀 Abrir no Grafana Explore",
+                    "url": "/explore?left=%7B%22datasource%22:%22Tempo%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22queryType%22:%22traceql%22,%22query%22:%22${__value.raw}%22%7D%5D,%22range%22:%7B%22from%22:%22${__from}%22,%22to%22:%22${__to}%22%7D%7D",
+                    "targetBlank": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "traceService" },
+            "properties": [
+              { "id": "displayName", "value": "Serviço" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "traceName" },
+            "properties": [
+              { "id": "displayName", "value": "Operação / Rota HTTP" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "traceDuration" },
+            "properties": [
+              { "id": "displayName", "value": "Duração" },
+              { "id": "unit", "value": "ms" },
+              { "id": "custom.displayMode", "value": "color-background" },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "green", "value": null },
+                    { "color": "yellow", "value": 150 },
+                    { "color": "red", "value": 300 }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "startTime" },
+            "properties": [
+              { "id": "displayName", "value": "Timestamp Início" }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 13 },
+      "id": 7,
+      "options": {
+        "footer": { "countRows": true, "enablePagination": true, "fields": "" },
+        "showHeader": true
+      },
+      "title": "📋 Tabela de Traces Recentes (Clique no Trace ID para visualizar no Waterfall abaixo)",
+      "type": "table",
+      "targets": [
+        {
+          "datasource": { "type": "tempo", "uid": "P214B5B846CF3925F" },
+          "limit": 50,
+          "query": "{.service.name =~ \"$service\" && name =~ \"$operation\" && duration >= $min_duration}",
+          "queryType": "traceql",
+          "refId": "A",
+          "tableType": "traces"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
+      "id": 300,
+      "title": "🔬 Inspeção Detalhada do Trace (Visualização Waterfall)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "tempo", "uid": "P214B5B846CF3925F" },
+      "gridPos": { "h": 14, "w": 24, "x": 0, "y": 23 },
+      "id": 8,
+      "options": {},
+      "title": "Visualização Waterfall do Trace: $traceId",
+      "type": "traces",
+      "targets": [
+        {
+          "datasource": { "type": "tempo", "uid": "P214B5B846CF3925F" },
+          "query": "$traceId",
+          "queryType": "traceql",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 37 },
+      "id": 400,
+      "title": "🌐 Mapa de Dependências & Topologia de Microsserviços (Node Graph)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+      "gridPos": { "h": 14, "w": 24, "x": 0, "y": 38 },
+      "id": 9,
+      "options": {},
+      "title": "Diagrama de Serviços e Conexões em Tempo Real (Node Graph)",
+      "type": "nodeGraph",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+          "editorMode": "code",
+          "expr": "label_join(label_join(sum(rate(traces_service_graph_request_total[5m])) by (server), \"id\", \"\", \"server\"), \"title\", \"\", \"server\") or label_join(label_join(sum(rate(traces_service_graph_request_total[5m])) by (client), \"id\", \"\", \"client\"), \"title\", \"\", \"client\")",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "nodes"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+          "editorMode": "code",
+          "expr": "label_join(label_join(label_join(sum(rate(traces_service_graph_request_total[5m])) by (client, server), \"source\", \"\", \"client\"), \"target\", \"\", \"server\"), \"id\", \"-\", \"client\", \"server\")",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "edges"
+        }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["tracing", "tempo", "opentelemetry", "mercadinho"],
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": true, "text": "mercadinho-local", "value": "mercadinho-local" },
+        "datasource": { "type": "prometheus", "uid": "P4169E866C3094E38" },
+        "definition": "label_values(cluster)",
+        "description": "Filtrar por Cluster Kubernetes",
+        "hide": 0,
+        "includeAll": true,
+        "allValue": ".*",
+        "label": "Cluster",
+        "multi": false,
+        "name": "cluster",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(cluster)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": { "selected": true, "text": "Todos", "value": ".*" },
+        "description": "Filtrar por nome do serviço",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Serviço",
+        "multi": false,
+        "name": "service",
+        "options": [
+          { "selected": true, "text": "Todos", "value": ".*" },
+          { "selected": false, "text": "flask-api-deployment", "value": "flask-api-deployment" },
+          { "selected": false, "text": "frontend", "value": "frontend" }
+        ],
+        "query": ".*,flask-api-deployment,frontend",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": { "selected": true, "text": "Todas as Operações", "value": ".*" },
+        "description": "Filtrar por Operação ou Rota HTTP na tabela de traces",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Operação",
+        "multi": false,
+        "name": "operation",
+        "options": [
+          { "selected": true, "text": "Todas as Operações", "value": ".*" },
+          { "selected": false, "text": "GET /api/health", "value": ".*GET /api/health.*" },
+          { "selected": false, "text": "GET /api/produtos", "value": ".*GET /api/produtos.*" },
+          { "selected": false, "text": "POST /api/login/auth", "value": ".*POST /api/login/auth.*" },
+          { "selected": false, "text": "POST /api/produtos", "value": ".*POST /api/produtos.*" },
+          { "selected": false, "text": "SELECT (PostgreSQL)", "value": ".*SELECT.*" },
+          { "selected": false, "text": "GET /api/inexistente (404)", "value": ".*GET /api/inexistente.*" }
+        ],
+        "query": ".*,.*GET /api/health.*,.*GET /api/produtos.*,.*POST /api/login/auth.*,.*POST /api/produtos.*,.*SELECT.*,.*GET /api/inexistente.*",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": { "selected": true, "text": "0ms", "value": "0ms" },
+        "description": "Filtrar traces com duração mínima",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Duração Mínima",
+        "multi": false,
+        "name": "min_duration",
+        "options": [
+          { "selected": true, "text": "0ms", "value": "0ms" },
+          { "selected": false, "text": "50ms", "value": "50ms" },
+          { "selected": false, "text": "100ms", "value": "100ms" },
+          { "selected": false, "text": "250ms", "value": "250ms" },
+          { "selected": false, "text": "500ms", "value": "500ms" },
+          { "selected": false, "text": "1s", "value": "1s" }
+        ],
+        "query": "0ms,50ms,100ms,250ms,500ms,1s",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": { "selected": true, "text": "42e483bcdce7b6c61e2c980a9ee3f606", "value": "42e483bcdce7b6c61e2c980a9ee3f606" },
+        "description": "Cole ou clique em um Trace ID na tabela acima para carregar o Waterfall",
+        "hide": 0,
+        "label": "Trace ID Selecionado",
+        "name": "traceId",
+        "options": [
+          { "selected": true, "text": "42e483bcdce7b6c61e2c980a9ee3f606", "value": "42e483bcdce7b6c61e2c980a9ee3f606" }
+        ],
+        "query": "42e483bcdce7b6c61e2c980a9ee3f606",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m"]
+  },
+  "timezone": "browser",
+  "title": "🔭 Tracing Distribuído & OpenTelemetry (Tempo)",
+  "uid": "tempo-distributed-tracing",
+  "version": 1,
+  "weekStart": ""
+}

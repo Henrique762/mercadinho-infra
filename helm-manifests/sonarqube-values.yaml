@@ -11,16 +11,24 @@ jdbcOverwrite:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 512Mi
+    cpu: 200m
+    memory: 1Gi
   limits:
-    cpu: 400m
-    memory: 800Mi
+    cpu: 1000m
+    memory: 2Gi
 
 sonarProperties:
-  sonar.web.javaOpts: "-Xmx256m -Xms256m -XX:+UseSerialGC"
-  sonar.search.javaOpts: "-Xmx128m -Xms128m -XX:MaxDirectMemorySize=32m"
-  sonar.ce.javaOpts: "-Xmx128m -Xms128m -XX:+UseSerialGC"
+  sonar.web.javaOpts: "-Xmx512m -Xms256m -XX:+UseSerialGC"
+  sonar.search.javaOpts: "-Xmx256m -Xms256m -XX:MaxDirectMemorySize=64m"
+  sonar.ce.javaOpts: "-Xmx256m -Xms128m -XX:+UseSerialGC"
 
 startupProbe:
   failureThreshold: 60
+  timeoutSeconds: 5
+
+readinessProbe:
+  timeoutSeconds: 5
+
+livenessProbe:
+  timeoutSeconds: 5
+

@@ -1,0 +1,34 @@
+replicas: 1
+
+nodeSelector:
+  kubernetes.io/hostname: minikube-m02
+
+tempo:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: "http://victoria-metrics-server.monitoring.svc:8428/api/v1/write"
+    processor:
+      service_graphs:
+        wait: 10s
+        max_items: 10000
+      span_metrics:
+        enable_target_info: true
+
+  overrides:
+    defaults:
+      metrics_generator:
+        processors:
+          - service-graphs
+          - span-metrics
+
+persistence:
+  enabled: true
+  size: 2Gi

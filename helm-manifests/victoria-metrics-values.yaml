@@ -1,0 +1,17 @@
+fullnameOverride: victoria-metrics
+
+server:
+  replicaCount: 1
+  retentionPeriod: 1 # 1 month retention
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+  nodeSelector:
+    kubernetes.io/hostname: minikube-m02
+  persistentVolume:
+    enabled: true
+    size: 2Gi

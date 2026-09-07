@@ -1,0 +1,36 @@
+server:
+  fullnameOverride: prometheus-server
+  retention: "2h"
+  global:
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    evaluation_interval: 15s
+    external_labels:
+      cluster: "mercadinho-local"
+  remoteWrite:
+    - url: "http://victoria-metrics-server.monitoring.svc:8428/api/v1/write"
+  persistentVolume:
+    enabled: false
+  resources:
+    limits:
+      cpu: 300m
+      memory: 384Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+  nodeSelector:
+    kubernetes.io/hostname: minikube-m02
+
+alertmanager:
+  enabled: false
+
+prometheus-pushgateway:
+  enabled: false
+
+kube-state-metrics:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/hostname: minikube-m02
+
+prometheus-node-exporter:
+  enabled: true

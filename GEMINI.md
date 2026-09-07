@@ -6,9 +6,9 @@ Você está operando no diretório `/mercadinho`. Este é um monorepo de um Home
 ## Ambiente de Infraestrutura
 * **Cluster Local:** Minikube operando com o driver do Docker.
 * **Atenção a Volumes e Persistência:** Devido ao uso do driver Docker no Minikube, evite mapear ou depender de diretórios temporários do host (como `/tmp`) para persistência de dados dos containers, pois esses dados são perdidos ao reiniciar o cluster. Sempre alerte sobre a volatilidade do armazenamento local durante os testes.
-* **Gestão de Permissões de Volume:** Em ambientes Minikube/Docker, volumes persistentes frequentemente apresentam erros de "Permission Denied" (Err: 13). Utilize `initContainers` com `chown` recursivo para garantir os UIDs corretos (Postgres: 999, Harbor Registry/Jobservice: 10000).
+* **Gestão de Permissões de Volume:** Em ambientes Minikube/Docker, volumes persistentes frequentemente apresentam erros de "Permission Denied" (Err: 13). Utilize `initContainers` com `chown` recursivo para garantir os UIDs corretos (Postgres: 999, Harbor Registry/Jobservice: 10000). Sempre configure `securityContext: runAsUser: 0` no initContainer para permitir execução como root.
 * **Resolução Interna via Gateway:** O tráfego interno para domínios locais (ex: `harbor.henrique.local`) deve ser direcionado ao IP do Envoy Gateway via `hostAliases`. O IP atual do Envoy é `10.99.67.213`.
-* **Recursos:** Sendo um HomeLab local, os recursos (CPU/RAM) são limitados. Sempre defina e respeite `requests` e `limits` otimizados para laboratório nos manifestos e values do Helm.
+* **Recursos e Limites de Nós:** Sendo um HomeLab local no WSL2, o `fs.inotify.max_user_instances` deve ser mantido em `8192` para evitar `too many open files` no `kube-proxy`. Além disso, a memória dos containers Docker do Minikube deve ser de ao menos 3.5GB (`docker update --memory 3.5g`) para evitar I/O thrashing nos nós com pods Java.
 
 ## Stack Tecnológica e Ferramentas
 * **Gerenciamento de Pacotes:** Helm (para instalação de ferramentas como Harbor, Jenkins e ArgoCD).
@@ -25,3 +25,6 @@ Você está operando no diretório `/mercadinho`. Este é um monorepo de um Home
 5. **Gestão de Segredos:** Nunca grave senhas, tokens ou chaves em texto plano nos manifestos. Utilize `secrets` do Kubernetes criadas via CLI ou abordagem de secrets selados. Certifique-se de que `harbor-pull-secret` exista nos namespaces de aplicação.
 6. **Caminhos Relativos:** Assuma sempre que a raiz da sua execução é o diretório `/mercadinho`. Respeite a separação estrutural entre as pastas do ArgoCD, aplicações e configurações de infraestrutura.
 7. **Configuração do Harbor Registry:** Sempre garanta que `relativeurls: true` esteja habilitado no registry para evitar loops de redirecionamento HTTP->HTTPS quando atrás do Envoy Gateway durante operações de `kaniko push`.
+8. **Exportação de Certificados TLS:** Para importar certificados locais no Windows/navegador, extraia o **`tls.crt`** (chave pública) do secret `wildcard-tls-secret` no namespace `gateway-system`. **Nunca** utilize o `tls.key` (chave privada).
+9. **Confiança de Certificados nos Nós Minikube (Containerd/Harbor):** Quando o certificado wildcard do cert-manager é renovado, os nós do Minikube precisam receber o novo `tls.crt` em `/usr/local/share/ca-certificates/harbor-wildcard.crt`, rodar `update-ca-certificates` e reiniciar o containerd (`systemctl restart containerd`) para que o `kubelet`/`containerd` consiga realizar o pull de imagens do `harbor.henrique.local` sem erro de autoridade desconhecida.
+
