@@ -92,7 +92,10 @@ mercadinho-infra/
 │   ├── frontend/         # Deployments e rotas do Frontend
 │   └── monitoring/       # Collector OTel e recursos de observabilidade
 └── tests/                # Testes de carga e validação
-    └── k6/               # Scripts k6 para testes de performance e carga contínua
+    └── k6/               # Scripts k6 segregados para testes contínuos
+        ├── backend/      # Testes de carga dedicados à API Flask e Banco
+        ├── frontend/     # Testes de carga dedicados à SPA React e Assets
+        └── e2e/          # Fluxo integrado de ponta a ponta (E2E)
 ```
 
 ---
